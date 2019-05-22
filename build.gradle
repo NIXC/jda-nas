@@ -44,7 +44,7 @@ def getBuildParameters(base, bits) {
         'library': "lib${base}.so",
         'setupArguments': ["-DBITZ:STRING=${bits}"],
         'buildArguments': [],
-        'env': ['CXXFLAGS': "", 'CFLAGS': "", 'LDFLAGS': ""]
+        'env': ['CXXFLAGS': "-maarch32", 'CFLAGS': "-maarch32", 'LDFLAGS': "-maarch32"]
     ]
   }
 }
