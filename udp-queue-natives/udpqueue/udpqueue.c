@@ -8,6 +8,7 @@
 #include "mutex.h"
 #include "timing.h"
 #include "linked.h"
+#include <stdint.h>
 
 #ifdef _MSC_VER
 #define WIN32_LEAN_AND_MEAN
@@ -362,15 +363,15 @@ static void manager_process(queue_manager_t* manager) {
 }
 
 JNIEXPORT jlong JNICALL Java_com_sedmelluq_discord_lavaplayer_udpqueue_natives_UdpQueueManagerLibrary_create(JNIEnv* jni, jobject me, jint queue_buffer_capacity, jlong packet_interval) {
-	return (jlong) manager_create((size_t) queue_buffer_capacity, packet_interval);
+	return (jlong)(intptr_t) manager_create((size_t) queue_buffer_capacity, packet_interval);
 }
 
 JNIEXPORT void JNICALL Java_com_sedmelluq_discord_lavaplayer_udpqueue_natives_UdpQueueManagerLibrary_destroy(JNIEnv* jni, jobject me, jlong instance) {
-	manager_destroy((queue_manager_t*) instance);
+	manager_destroy((queue_manager_t*)(intptr_t) instance);
 }
 
 JNIEXPORT jint JNICALL Java_com_sedmelluq_discord_lavaplayer_udpqueue_natives_UdpQueueManagerLibrary_getRemainingCapacity(JNIEnv* jni, jobject me, jlong instance, jlong key) {
-	return (jint) manager_get_remaining_capacity((queue_manager_t*) instance, (uint64_t) key);
+	return (jint) manager_get_remaining_capacity((queue_manager_t*)(intptr_t) instance, (uint64_t) key);
 }
 
 JNIEXPORT jboolean JNICALL Java_com_sedmelluq_discord_lavaplayer_udpqueue_natives_UdpQueueManagerLibrary_queuePacket(JNIEnv* jni, jobject me, jlong instance, jlong key, jstring address_string,
@@ -379,7 +380,7 @@ JNIEXPORT jboolean JNICALL Java_com_sedmelluq_discord_lavaplayer_udpqueue_native
 	const char* address = (*jni)->GetStringUTFChars(jni, address_string, NULL);
 	void* bytes = (*jni)->GetDirectBufferAddress(jni, data_buffer);
 
-	bool result = manager_queue_packet((queue_manager_t*) instance, (uint64_t) key, address, port, bytes, (size_t) data_length, SOCKET_INVALID);
+	bool result = manager_queue_packet((queue_manager_t*)(intptr_t) instance, (uint64_t) key, address, port, bytes, (size_t) data_length, SOCKET_INVALID);
 
 	(*jni)->ReleaseStringUTFChars(jni, address_string, address);
 
@@ -408,7 +409,7 @@ JNIEXPORT jboolean JNICALL Java_com_sedmelluq_discord_lavaplayer_udpqueue_native
 }
 
 JNIEXPORT void JNICALL Java_com_sedmelluq_discord_lavaplayer_udpqueue_natives_UdpQueueManagerLibrary_process(JNIEnv* jni, jobject me, jlong instance) {
-	manager_process((queue_manager_t*) instance);
+	manager_process((queue_manager_t*)(intptr_t) instance);
 }
 
 JNIEXPORT void JNICALL Java_com_sedmelluq_discord_lavaplayer_udpqueue_natives_UdpQueueManagerLibrary_processWithSocket(
